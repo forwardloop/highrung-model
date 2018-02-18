@@ -2,9 +2,9 @@ package highrung.model
 
 object MatchResult {
 
-  val SingleRegex = """([0-9]+):([0-9]+)""".r // 9:1
-  val DetailedRegex = """[0-9]+:[0-9]+ \(([[0-9]+:[0-9]+,?]+)\)""".r // 3:0 (9:1,9:8,9:5)
-  val ForfeitRegex = """f([1-2])""".r // f1
+  final val SingleRegex = """([0-9]+):([0-9]+)""".r // 9:1
+  final val DetailedRegex = """[0-9]+:[0-9]+ \(([[0-9]+:[0-9]+,?]+)\)""".r // 3:0 (9:1,9:8,9:5)
+  final val ForfeitRegex = """f([1-2])""".r // f1
 
   def apply(result: String): MatchResult =
     result match {
