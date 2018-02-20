@@ -3,4 +3,4 @@
 [![Build Status](https://travis-ci.org/forwardloop/highrung-model.svg)](https://travis-ci.org/forwardloop/highrung-model)
 [![Coverage Status](https://coveralls.io/repos/github/forwardloop/highrung-model/badge.svg?branch=master)](https://coveralls.io/github/forwardloop/highrung-model?branch=master)
 
-A sample of domain entities used in the [squash players](https://www.squashpoints.com) ranking system. 
+A sample of domain entities used in the [squash players](http://www.squashpoints.com) ranking system. 
