@@ -37,6 +37,12 @@ class ScoringSystemSpec extends Specification {
     "fail for -1:1" in {
       er.validate(MatchResult("0:1 (-1:1)")) must beFalse
     }
+    "pass for forfeit" in {
+      er.validate(MatchResult("f1")) must beTrue
+    }
+    "fail for overall result" in {
+      er.validate(MatchResult("1:0")) must beFalse
+    }
   }
 
   val pars = PointARallySquashScoring
@@ -71,6 +77,20 @@ class ScoringSystemSpec extends Specification {
     }
     "fail for -1:1" in {
       pars.validate(MatchResult("0:1 (-1:1)")) must beFalse
+    }
+    "pass for forfeit" in {
+      pars.validate(MatchResult("f1")) must beTrue
+    }
+    "fail for overall result" in {
+      pars.validate(MatchResult("1:0")) must beFalse
+    }
+  }
+
+  val any = AnySquashScoring
+
+  "Anything goes squash scoring system" should {
+    "pass for 300:0" in {
+      any.validate(MatchResult("1:0 (300:0)")) must beTrue
     }
   }
 

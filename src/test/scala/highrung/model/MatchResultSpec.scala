@@ -25,6 +25,14 @@ class MatchResultSpec extends Specification {
       MatchResult("forfeit") must beEqualTo(Undefined)
     }
 
+    "produce undefined for incorrect overall" in {
+      MatchResult("1:-1") must beEqualTo(Undefined)
+    }
+
+    "produce undefined for incorrect detailed" in {
+      MatchResult("1:0 (1:-1)") must beEqualTo(Undefined)
+    }
+
     "produce undefined for result with incorrect format" in {
       MatchResult("2:0 (1:a,9:0)") must beEqualTo(Undefined)
     }
