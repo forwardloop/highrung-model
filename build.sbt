@@ -1,6 +1,6 @@
 name := """highrung-model"""
 
-version := "0.9.1"
+version := "0.9.2"
 
 scalaVersion := "2.11.12"
 crossScalaVersions := Seq("2.11.12", "2.12.4")
