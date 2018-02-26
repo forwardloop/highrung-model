@@ -18,8 +18,7 @@ case object EnglishSquashScoring extends SquashScoring("E", "English/hand-out, t
 
   def validate(matchResult: MatchResult) = matchResult match {
     case Detailed(games) => games.foldLeft(true)((acc, game) => (acc && validateGame(game)))
-    case Forfeit(_) => true
-    case _ => false
+    case _ => true
   }
 }
 
@@ -33,8 +32,7 @@ case object PointARallySquashScoring extends SquashScoring("P", "Point-A-Rally, 
 
   def validate(matchResult: MatchResult) = matchResult match {
     case Detailed(games) => games.foldLeft(true)((acc, game) => (acc && validateGame(game)))
-    case Forfeit(_) => true
-    case _ => false
+    case _ => true
   }
 }
 

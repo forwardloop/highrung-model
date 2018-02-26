@@ -1,11 +1,12 @@
 name := """highrung-model"""
 
-version := "0.9.0"
+version := "0.9.1"
 
 scalaVersion := "2.11.12"
+crossScalaVersions := Seq("2.11.12", "2.12.4")
 
 libraryDependencies ++= Seq(
-  "org.specs2" %% "specs2-core" % "3.8.5" % "test"
+  "org.specs2" %% "specs2-core" % "4.0.2" % "test"
 )
 
 // POM settings for Sonatype

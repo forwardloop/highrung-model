@@ -34,14 +34,14 @@ class ScoringSystemSpec extends Specification {
     "fail for 0:8, 0:9" in {
       er.validate(MatchResult("0:2 (0:8,0:9)")) must beFalse
     }
-    "fail for -1:1" in {
-      er.validate(MatchResult("0:1 (-1:1)")) must beFalse
-    }
+    //    "fail for -1:1" in {
+    //      er.validate(MatchResult("0:1 (-1:1)")) must beFalse
+    //    }
     "pass for forfeit" in {
       er.validate(MatchResult("f1")) must beTrue
     }
-    "fail for overall result" in {
-      er.validate(MatchResult("1:0")) must beFalse
+    "pass for overall result" in {
+      er.validate(MatchResult("1:0")) must beTrue
     }
   }
 
@@ -75,14 +75,14 @@ class ScoringSystemSpec extends Specification {
     "fail for 0:10, 0:11" in {
       pars.validate(MatchResult("0:2 (0:10,0:11)")) must beFalse
     }
-    "fail for -1:1" in {
-      pars.validate(MatchResult("0:1 (-1:1)")) must beFalse
-    }
+    //    "fail for -1:1" in {
+    //      pars.validate(MatchResult("0:1 (-1:1)")) must beFalse
+    //    }
     "pass for forfeit" in {
       pars.validate(MatchResult("f1")) must beTrue
     }
-    "fail for overall result" in {
-      pars.validate(MatchResult("1:0")) must beFalse
+    "pass for overall result" in {
+      pars.validate(MatchResult("1:0")) must beTrue
     }
   }
 

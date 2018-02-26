@@ -74,12 +74,12 @@ class MatchResultSpec extends Specification {
     }
 
     "produce detailed with 2 games" in {
-      val games =  List(Game(1, 0), Game(9, 0))
+      val games = List(Game(1, 0), Game(9, 0))
       MatchResult(games) must beEqualTo(Detailed(games))
     }
 
     "produce overall with score" in {
-      val score = Score(3,0)
+      val score = Score(3, 0)
       MatchResult(score = Some(score)) must beEqualTo(Overall(score))
     }
 
