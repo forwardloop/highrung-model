@@ -1,11 +1,12 @@
 name := """highrung-model"""
 
-version := "0.9.2"
+version := "0.9.3-SNAPSHOT"
 
 scalaVersion := "2.11.12"
 crossScalaVersions := Seq("2.11.12", "2.12.4")
 
 libraryDependencies ++= Seq(
+  "joda-time" % "joda-time" % "2.9.9",
   "org.specs2" %% "specs2-core" % "4.0.2" % "test"
 )
 
