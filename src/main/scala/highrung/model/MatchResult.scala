@@ -40,8 +40,9 @@ object MatchResult {
     case Detailed(games) =>
       val buf = games.map(g => s"${g.points1}:${g.points2}")
       val detailed = s" (" + (buf mkString (",")) + ")"
-      val wonP1 = games.filter(_.player2Lost).size
-      val wonP2 = games.filter(_.player1Lost).size
+      val drew = games.filter(_.isDraw()).size
+      val wonP1 = drew + games.filter(_.player2Lost).size
+      val wonP2 = drew + games.filter(_.player1Lost).size
       val cumulative = s"$wonP1:$wonP2"
       Some(cumulative + detailed)
     case Undefined => None

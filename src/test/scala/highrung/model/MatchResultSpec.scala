@@ -21,6 +21,11 @@ class MatchResultSpec extends Specification {
       MatchResult("1:2 (1:0,0:9,4:5)") must beEqualTo(Detailed(games))
     }
 
+    "produce 3 games from 2:2 (1:0,9:9,4:5)" in {
+      val games = List(Game(1, 0), Game(9, 9), Game(4, 5))
+      MatchResult("2:2 (1:0,9:9,4:5)") must beEqualTo(Detailed(games))
+    }
+
     "produce undefined for a 'forfeit'" in {
       MatchResult("forfeit") must beEqualTo(Undefined)
     }
@@ -98,6 +103,11 @@ class MatchResultSpec extends Specification {
     "produce 2:0 (1:0,1:0) from detailed" in {
       val games = List(Game(1, 0), Game(1, 0))
       MatchResult.unapply(Detailed(games)).get must equalTo("2:0 (1:0,1:0)")
+    }
+
+    "produce 2:2 (1:0,9:9,4:5) from detailed" in {
+      val games = List(Game(1, 0), Game(9, 9), Game(4, 5))
+      MatchResult.unapply(Detailed(games)).get must equalTo("2:2 (1:0,9:9,4:5)")
     }
 
     "produce 2:0 from overall" in {
