@@ -7,7 +7,7 @@ scalaVersion := "2.11.12"
 
 libraryDependencies ++= Seq(
   "joda-time" % "joda-time" % "2.9.9",
-  "com.github.forwardloop" %% "glicko2s" % "0.9.4-SNAPSHOT",
+  "com.github.forwardloop" %% "glicko2s" % "0.9.4",
   "org.specs2" %% "specs2-core" % "4.0.2" % "test"
 )
 
