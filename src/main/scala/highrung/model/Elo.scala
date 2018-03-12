@@ -41,7 +41,7 @@ object EloResult {
   final val WeakWinVal = 0.8
 
   final val StraightSetResultStrength = 3.toByte
-  final val StringResultStrength = 2.toByte
+  final val StrongResultStrength = 2.toByte
   final val WeakResultStrength = 1.toByte
 
   import EloResultType._
@@ -50,25 +50,26 @@ object EloResult {
 
     def computeStrength(p1: Int, p2: Int): Int = {
       if (Math.abs(p1 - p2) == 1) WeakResultStrength
-      else if (Math.abs(p1 - p2) == 2) StringResultStrength
+      else if (Math.abs(p1 - p2) >= 2 && p1 != 0 && p2 != 0) StrongResultStrength
       else StraightSetResultStrength
+    }
+
+    def mapToElo(score: Score): EloResult = score match {
+      case Score(p1, p2) if p1 == p2 => Draw
+      case Score(p1, p2) =>
+        val winLoss = if (p1 > p2) Win else Loss
+        val strength = computeStrength(p1, p2)
+        EloResultType
+          .eloResults
+          .find(r => r.winLoss == winLoss && r.strength == strength)
+          .getOrElse(EloUndefined)
+      case _ => EloUndefined
     }
 
     matchResult match {
       case Forfeit(pId) => EloUndefined
-      case Overall(score) => EloUndefined
-      case Detailed(games) =>
-        MatchResult.gamesToScore(games) match {
-          case Score(p1, p2) if p1==p2 => Draw
-          case Score(p1, p2) =>
-            val winLoss = if (p1 > p2) Win else Loss
-            val strength = computeStrength(p1, p2)
-            EloResultType
-              .eloResults
-              .find(r => r.winLoss==winLoss && r.strength==strength)
-              .getOrElse(EloUndefined)
-          case _ => EloUndefined
-        }
+      case Overall(score) => mapToElo(score)
+      case Detailed(games) => mapToElo(MatchResult.gamesToScore(games))
       case Undefined => EloUndefined
     }
   }
@@ -80,12 +81,12 @@ trait WinLoss { def reverse: WinLoss }
 case object Win extends WinLoss { def reverse = Loss }
 case object Loss extends WinLoss { def reverse = Win }
 
-trait ResultStrength extends EloResult { def strength: Byte}
+trait ResultStrength extends EloResult { def strength: Byte }
 trait WinLossMarker extends EloResult { def winLoss: WinLoss }
 trait RacquetEloResult extends EloResult with ResultStrength with WinLossMarker
 
 trait StraightSetResult extends ResultStrength { def strength = StraightSetResultStrength }
-trait StrongResult extends ResultStrength { def strength = StringResultStrength }
+trait StrongResult extends ResultStrength { def strength = StrongResultStrength }
 trait WeakResult extends ResultStrength { def strength = WeakResultStrength }
 
 trait WinMarker extends WinLossMarker { def winLoss = Win }
