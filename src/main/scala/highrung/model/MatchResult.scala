@@ -40,17 +40,22 @@ object MatchResult {
     case Detailed(games) =>
       val buf = games.map(g => s"${g.points1}:${g.points2}")
       val detailed = s" (" + (buf mkString (",")) + ")"
-      val drew = games.filter(_.isDraw()).size
-      val wonP1 = drew + games.filter(_.player2Lost).size
-      val wonP2 = drew + games.filter(_.player1Lost).size
-      val cumulative = s"$wonP1:$wonP2"
+      val score = gamesToScore(games)
+      val cumulative = s"${score.gamesP1}:${score.gamesP2}"
       Some(cumulative + detailed)
     case Undefined => None
+  }
+
+  def gamesToScore(games: Seq[Game]) = {
+    val drew = games.filter(_.isDraw()).size
+    val wonP1 = drew + games.filter(_.player2Lost).size
+    val wonP2 = drew + games.filter(_.player1Lost).size
+    Score(wonP1, wonP2)
   }
 }
 
 sealed trait MatchResult
 case class Overall(score: Score) extends MatchResult
-case class Detailed(games: List[Game]) extends MatchResult
+case class Detailed(games: Seq[Game]) extends MatchResult
 case class Forfeit(benefitingPlayerId: Int) extends MatchResult
 case object Undefined extends MatchResult
