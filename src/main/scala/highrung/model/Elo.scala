@@ -40,30 +40,33 @@ object EloResult {
   final val StringWinVal = 0.9
   final val WeakWinVal = 0.8
 
+  final val StraightSetResultStrength = 3.toByte
+  final val StringResultStrength = 2.toByte
+  final val WeakResultStrength = 1.toByte
+
   import EloResultType._
 
-  //  private def opponentResult(eloRes: EloResult) = eloRes match {
-  //    case Win =>
-  //
-  //  }
-
   def apply(matchResult: MatchResult): EloResult = {
+
+    def computeStrength(p1: Int, p2: Int): Int = {
+      if (Math.abs(p1 - p2) == 1) WeakResultStrength
+      else if (Math.abs(p1 - p2) == 2) StringResultStrength
+      else StraightSetResultStrength
+    }
+
     matchResult match {
       case Forfeit(pId) => EloUndefined
       case Overall(score) => EloUndefined
       case Detailed(games) =>
         MatchResult.gamesToScore(games) match {
+          case Score(p1, p2) if p1==p2 => Draw
           case Score(p1, p2) =>
-            if (p1 == p2) Draw
-            else if (p1 > p2) {
-              if (p2 == 0) StraightSetWin
-              else if (p1 == p2 + 1) WeakWin
-              else StrongWin
-            } else {
-              if (p1 == 0) StraightSetLoss
-              else if (p2 == p1 + 1) WeakLoss
-              else StrongLoss
-            }
+            val winLoss = if (p1 > p2) Win else Loss
+            val strength = computeStrength(p1, p2)
+            EloResultType
+              .eloResults
+              .find(r => r.winLoss==winLoss && r.strength==strength)
+              .getOrElse(EloUndefined)
           case _ => EloUndefined
         }
       case Undefined => EloUndefined
@@ -73,20 +76,42 @@ object EloResult {
 
 import EloResult._
 
-trait StraightSetResult extends EloResult
-trait StrongResult extends EloResult
-trait WeakResult extends EloResult
-trait AWin extends EloResult
-trait ALoss extends EloResult
+trait WinLoss { def reverse: WinLoss }
+case object Win extends WinLoss { def reverse = Loss }
+case object Loss extends WinLoss { def reverse = Win }
+
+trait ResultStrength extends EloResult { def strength: Byte}
+trait WinLossMarker extends EloResult { def winLoss: WinLoss }
+trait RacquetEloResult extends EloResult with ResultStrength with WinLossMarker
+
+trait StraightSetResult extends ResultStrength { def strength = StraightSetResultStrength }
+trait StrongResult extends ResultStrength { def strength = StringResultStrength }
+trait WeakResult extends ResultStrength { def strength = WeakResultStrength }
+
+trait WinMarker extends WinLossMarker { def winLoss = Win }
+trait LossMarker extends WinLossMarker { def winLoss = Loss }
 
 object EloResultType {
-  case object StraightSetWin extends StraightSetResult with AWin { val value = 1.0 } //e.g. 3:0
-  case object StrongWin extends StrongResult with AWin { val value = StringWinVal } //e.g. 3:1
-  case object WeakWin extends WeakResult with AWin { val value = WeakWinVal } //e.g. 3:2
-  case object StraightSetLoss extends StraightSetResult with ALoss { val value = 1.0 - StraightSetWin.value } //e.g. 0:3
-  case object StrongLoss extends StrongResult with ALoss { val value = 1.0 - StrongWin.value } //e.g. 1:3
-  case object WeakLoss extends WeakResult with ALoss { val value = 1.0 - WeakWin.value } //e.g. 2:3
+
+  case object StraightSetWin extends RacquetEloResult
+    with StraightSetResult with WinMarker { val value = 1.0 } //e.g. 3:0
+
+  case object StrongWin extends RacquetEloResult
+    with StrongResult with WinMarker { val value = StringWinVal } //e.g. 3:1
+
+  case object WeakWin extends RacquetEloResult
+    with WeakResult with WinMarker { val value = WeakWinVal } //e.g. 3:2
+
+  case object StraightSetLoss extends RacquetEloResult
+    with StraightSetResult with LossMarker { val value = 1.0 - StraightSetWin.value } //e.g. 0:3
+
+  case object StrongLoss extends RacquetEloResult
+    with StrongResult with LossMarker { val value = 1.0 - StrongWin.value } //e.g. 1:3
+
+  case object WeakLoss extends RacquetEloResult
+    with WeakResult with LossMarker { val value = 1.0 - WeakWin.value } //e.g. 2:3
+
   case object EloUndefined extends EloResult { val value = -1.0 }
 
-  val eloResults = Seq(StraightSetWin, StrongWin, WeakWin, StraightSetLoss, WeakLoss, EloUndefined)
+  val eloResults = Seq(StraightSetWin, StrongWin, WeakWin, StraightSetLoss, StrongLoss, WeakLoss)
 }
